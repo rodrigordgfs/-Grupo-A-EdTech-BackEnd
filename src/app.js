@@ -1,6 +1,7 @@
 "use strict";
 
 const express = require("express");
+const cors = require("cors");
 
 const { routes, errors } = require("./routes");
 
@@ -13,6 +14,13 @@ const InvalidArgument = require("./errors/InvalidArgument");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,DELETE,CREATE,PATCH");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  app.use(cors());
+  next();
+});
 app.use(routes);
 app.use(errors());
 
