@@ -1,7 +1,8 @@
 const express = require("express");
-const routes = express.Router();
 const { celebrate, Joi, errors, Segments } = require("celebrate");
+const routes = express.Router();
 const Students = require("./controllers/students");
+const Authorize = require("./controllers/authorize");
 
 routes.get("/", async (req, res, next) => {
   try {
@@ -14,6 +15,17 @@ routes.get("/", async (req, res, next) => {
     res.status(503).send();
   }
 });
+
+routes.post(
+  "/v1/api-ed-tech/authorize",
+  celebrate({
+    [Segments.BODY]: Joi.object({
+      username: Joi.string().max(50).required(),
+      password: Joi.string().max(50).required(),
+    }),
+  }),
+  Authorize.create
+);
 
 routes
   .post(
