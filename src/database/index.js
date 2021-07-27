@@ -5,7 +5,7 @@ const dbConfig = require("../config/database");
 
 const connection = new Sequelize(dbConfig);
 
-const Students = require('../models/students')
+const Students = require("../models/students");
 
 Students.init(connection);
 
