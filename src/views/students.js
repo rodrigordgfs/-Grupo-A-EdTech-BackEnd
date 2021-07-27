@@ -17,9 +17,12 @@ exports.create = async (body) => {
     return await Students.create(body);
   };
 
-exports.getAll = async () => {
-    return await Students.findAll({
-        attributes: ['id', 'name', 'email', 'cpf', 'ra', 'active']
+exports.getAll = async (perPage, page, orderBy, order) => {
+    return await Students.findAndCountAll({
+        attributes: ['id', 'name', 'email', 'cpf', 'ra', 'active'],
+        limit: Number(perPage) || 10,
+        offset: Number(page) || 1,
+        order: [[orderBy || 'id', order || 'DESC']]
     });
 };
 
