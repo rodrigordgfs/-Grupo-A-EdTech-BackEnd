@@ -1,7 +1,9 @@
 const express = require("express");
-const routes = express.Router();
 const { celebrate, Joi, errors, Segments } = require("celebrate");
+const routes = express.Router();
 const Students = require("./controllers/students");
+const Authorize = require("./controllers/authorize");
+const AuthMiddleware = require("./middlewares/auth");
 
 routes.get("/", async (req, res, next) => {
   try {
@@ -15,9 +17,21 @@ routes.get("/", async (req, res, next) => {
   }
 });
 
+routes.post(
+  "/v1/api-ed-tech/authorize",
+  celebrate({
+    [Segments.BODY]: Joi.object({
+      username: Joi.string().max(50).required(),
+      password: Joi.string().max(50).required(),
+    }),
+  }),
+  Authorize.create
+);
+
 routes
   .post(
     "/v1/api-ed-tech/students",
+    AuthMiddleware.token,
     celebrate({
       [Segments.BODY]: Joi.object({
         name: Joi.string().max(100).required(),
@@ -31,10 +45,11 @@ routes
     }),
     Students.create
   )
-  .get("/v1/api-ed-tech/students", Students.getAll)
-  .get("/v1/api-ed-tech/students/:id", Students.getByID)
+  .get("/v1/api-ed-tech/students", AuthMiddleware.token, Students.getAll)
+  .get("/v1/api-ed-tech/students/:id", AuthMiddleware.token, Students.getByID)
   .patch(
     "/v1/api-ed-tech/students/:id",
+    AuthMiddleware.token,
     celebrate({
       [Segments.BODY]: Joi.object({
         name: Joi.string().max(100),
@@ -44,7 +59,11 @@ routes
     }),
     Students.update
   )
-  .delete("/v1/api-ed-tech/students/:id", Students.delete);
+  .delete(
+    "/v1/api-ed-tech/students/:id",
+    AuthMiddleware.token,
+    Students.delete
+  );
 
 module.exports = {
   routes,
