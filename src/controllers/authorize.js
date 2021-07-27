@@ -11,7 +11,7 @@ exports.create = async (req, res, next) => {
         password: body.password,
       },
       process.env.JWT_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "365d" }
     );
     return res.status(200).send({ token });
   } catch (error) {
