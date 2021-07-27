@@ -3,6 +3,18 @@ const routes = express.Router();
 const { celebrate, Joi, errors, Segments } = require("celebrate");
 const Students = require("./controllers/students");
 
+routes.get("/", async (req, res, next) => {
+  try {
+    res.send({
+      uptime: process.uptime(),
+      message: "OK",
+      timestamp: new Date(Date.now()).toISOString(),
+    });
+  } catch (e) {
+    res.status(503).send();
+  }
+});
+
 routes
   .post(
     "/v1/api-ed-tech/students",
