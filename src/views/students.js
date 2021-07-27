@@ -3,6 +3,7 @@
 const Students = require("../models/students");
 const AlreadyExists = require("../errors/AlreadyExists");
 const NotFound = require("../errors/NotFound");
+const { Op } = require("sequelize");
 
 exports.checkIfExist = async (params, name) => {
   const result = await Students.findOne({ where: params });
@@ -17,12 +18,20 @@ exports.create = async (body) => {
   return await Students.create(body);
 };
 
-exports.getAll = async (perPage, page, orderBy, order) => {
+exports.getAll = async (perPage, page, orderBy, order, name) => {
+  const where = name
+    ? {
+        name: {
+          [Op.like]: `%${name}%`,
+        },
+      }
+    : null;
   return await Students.findAndCountAll({
     attributes: ["id", "name", "email", "cpf", "ra", "active"],
     limit: Number(perPage) || 10,
-    offset: Number(page) || 1,
+    offset: Number(page) || null,
     order: [[orderBy || "id", order || "DESC"]],
+    where,
   });
 };
 

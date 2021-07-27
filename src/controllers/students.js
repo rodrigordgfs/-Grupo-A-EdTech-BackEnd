@@ -14,8 +14,8 @@ exports.create = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    const { perPage, page, orderBy, order } = req.query;
-    const result = await Students.getAll(perPage, page, orderBy, order);
+    const { perPage, page, orderBy, order, name } = req.query;
+    const result = await Students.getAll(perPage, page, orderBy, order, name);
     res.status(200).json(result);
   } catch (error) {
     next(error);
