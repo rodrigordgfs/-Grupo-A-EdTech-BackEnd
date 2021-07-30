@@ -28,7 +28,7 @@ exports.getAll = async (perPage, page, orderBy, order, name) => {
     : null;
   return await Students.findAndCountAll({
     attributes: ["id", "name", "email", "cpf", "ra", "active"],
-    limit: Number(perPage) || 10,
+    limit: Number(perPage) || null,
     offset: Number(page) || null,
     order: [[orderBy || "id", order || "DESC"]],
     where,
